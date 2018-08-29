@@ -1,14 +1,18 @@
 <%
-const conf = {
-    title : 'top',
-    description : 'This is top page',
-    style: 'index.css',
-    script: 'index.js',
+const config = {
+    title: 'top',
+    description: 'This is top page',
+    styles: ['/css/index.css'],
+    scripts: [
+        'https://cdn.polyfill.io/v2/polyfill.js?features=default-3.4,Array.prototype.includes,Object.entries',
+        '/js/vendor.bundle.js',
+        '/js/index.js'
+    ],
     metaImage: 'https://dummyimage.com/600x400/333/ddd.png&text=Dummy+image'
 };
 %>
 
-<%- include('./common/_head.ejs', { conf }) %>
+<%- include('./common/_head.ejs', { ...config }) %>
 
 <main id="main" class="main" role="main">
 <% [...Array(5).keys()].forEach(index => { %>
@@ -16,4 +20,4 @@ const conf = {
 <% }) %>
 </main>
 
-<%- include('./common/_foot.ejs', { conf }) %>
+<%- include('./common/_foot.ejs', { ...config }) %>
