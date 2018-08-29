@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="<%= lang %>">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title><%= conf.title %></title>
+    <meta name="description" content="<%= conf.description %>">
+
+    <meta itemprop="name" content="<%= conf.title %>" />
+    <meta itemprop="description" content="<%= conf.description %>" />
+<% if (typeof conf.metaImage === 'string') { %>
+    <meta itemprop="image" content="<%- conf.metaImage %>" />
+<% } %>
+
+    <meta property="og:title" content="<%= conf.title %>" />
+    <meta property="og:description" content="<%= conf.description %>" />
+<% if (typeof og === 'object') { %>
+    <meta property="og:type" content="<%= og.type %>" />
+    <meta property="og:image" content="<%= og.image %>" />
+    <meta property="og:url" content="<%= og.url %>" />
+    <meta property="og:site_name" content="<%= og.siteName %>" />
+<% } %>
+
+<% if (typeof twitter === 'object') { %>
+    <meta name="twitter:card" content="<%= twitter.card %>" />
+    <meta name="twitter:site" content="<%= twitter.site %>" />
+<% } %>
+
+
+<% if (NODE_ENV === 'production') { %>
+<%
+    conf.style = conf.style || [];
+    if (typeof conf.style === 'string') {
+        conf.style = [conf.style];
+    }
+    conf.style.forEach(style => {
+%>
+    <link rel="stylesheet" href="<%= style.match(/^https?:/) != null ? style : `/css/${style}` %>">
+<% }) %>
+<% } %>
+
+</head>
+<body>
