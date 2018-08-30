@@ -19,7 +19,7 @@
   "lint-staged": {
     "subTaskConcurrency": 1,
     "linters": {
-      "*.ts": [
+      "*.{ts,tsx}": [
         "tslint --fix",
         "git add"
       ],
