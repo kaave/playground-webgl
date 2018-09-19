@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title><%= conf.title %></title>
-    <meta name="description" content="<%= conf.description %>">
+    <title><%= title %></title>
+    <meta name="description" content="<%= description %>">
 
-    <meta itemprop="name" content="<%= conf.title %>" />
-    <meta itemprop="description" content="<%= conf.description %>" />
-<% if (typeof conf.metaImage === 'string') { %>
-    <meta itemprop="image" content="<%- conf.metaImage %>" />
+    <meta itemprop="name" content="<%= title %>" />
+    <meta itemprop="description" content="<%= description %>" />
+<% if (typeof metaImage === 'string') { %>
+    <meta itemprop="image" content="<%- metaImage %>" />
 <% } %>
 
-    <meta property="og:title" content="<%= conf.title %>" />
-    <meta property="og:description" content="<%= conf.description %>" />
+    <meta property="og:title" content="<%= title %>" />
+    <meta property="og:description" content="<%= description %>" />
 <% if (typeof og === 'object') { %>
     <meta property="og:type" content="<%= og.type %>" />
     <meta property="og:image" content="<%= og.image %>" />
