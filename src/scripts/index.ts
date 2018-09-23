@@ -1,18 +1,20 @@
 import './common/initializer';
 
-import format from 'date-fns/format';
-
 import '../styles/index.css';
 
-class Main {
-  constructor() {
-    this.onDOMContentLoaded = this.onDOMContentLoaded.bind(this);
+window.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.getElementById('canvas');
+  if (!canvas || !(canvas instanceof HTMLCanvasElement)) {
+    return;
   }
 
-  onDOMContentLoaded() {
-    console.log(`DOMContentLoaded${format(new Date())}`);
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) {
+    return;
   }
-}
 
-const main = new Main();
-window.addEventListener('DOMContentLoaded', main.onDOMContentLoaded);
+  gl.clearColor(0, 0, 0, 1);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+});
