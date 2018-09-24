@@ -1,7 +1,7 @@
 import './common/initializer';
 import '../styles/index.css';
-import * as matIV from './modules/minMatrix';
 
+import * as matIV from './modules/minMatrix';
 import fragSource from './shaders/main.frag';
 import vertSource from './shaders/main.vert';
 
@@ -76,16 +76,27 @@ window.addEventListener('DOMContentLoaded', () => {
   const vertexShader = setShader(gl, vertSource, 'VERTEX');
   const fragmentShader = setShader(gl, fragSource, 'FRAGMENT');
   const webglProgram = createWebGLProgram(gl, vertexShader, fragmentShader);
-  const attributeLocation = gl.getAttribLocation(webglProgram, 'position');
-  const attributeStride = 3;
-  const vertexPosition = [0, 1, 0, 1, 0, 0, -1, 0, 0];
-  const vbo = createVBO(gl, vertexPosition);
-  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-  gl.enableVertexAttribArray(attributeLocation);
-  gl.vertexAttribPointer(attributeLocation, attributeStride, gl.FLOAT, false, 0, 0);
+  const attributeLocations = {
+    position: gl.getAttribLocation(webglProgram, 'position'),
+    color: gl.getAttribLocation(webglProgram, 'color'),
+  };
+  const attributeStrides = {
+    position: 3,
+    color: 4,
+  };
+  const vertexPosition = [[0, 1, 0], [1, 0, 0], [-1, 0, 0]].reduce((tmp, ary) => [...tmp, ...ary], []);
+  const positionVBO = createVBO(gl, vertexPosition);
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionVBO);
+  gl.enableVertexAttribArray(attributeLocations.position);
+  gl.vertexAttribPointer(attributeLocations.position, attributeStrides.position, gl.FLOAT, false, 0, 0);
 
-  // const mMatrix = matIV.identify();
-  const vMatrix = matIV.lookAt([0, 1, 3], [0, 0, 0], matIV.identify());
+  const vertexColor = [[1, 1, 0, 1], [0, 1, 1, 1], [1, 0, 1, 1]].reduce((tmp, ary) => [...tmp, ...ary], []);
+  const colorVBO = createVBO(gl, vertexColor);
+  gl.bindBuffer(gl.ARRAY_BUFFER, colorVBO);
+  gl.enableVertexAttribArray(attributeLocations.color);
+  gl.vertexAttribPointer(attributeLocations.color, attributeStrides.color, gl.FLOAT, false, 0, 0);
+
+  const vMatrix = matIV.lookAt([0, 0, 3], [0, 0, 0], [0, 1, 0]);
   const pMatrix = matIV.perspective(90, canvas.width / canvas.height, 0.1, 100);
   const mvpMatrix = matIV.multiply(matIV.multiply(pMatrix, vMatrix), vMatrix);
   const uniformLocation = gl.getUniformLocation(webglProgram, 'mvpMatrix');

@@ -1,4 +1,5 @@
 type Matrix = Float32Array;
+type Vertex3 = [number, number, number];
 
 export function createMatrix(): Matrix {
   return new Float32Array(16);
@@ -48,7 +49,7 @@ export function multiply(matrixA: Matrix, matrixB: Matrix): Matrix {
   return matrix;
 }
 
-export function scale(matrix: Matrix, vector: number[]): Matrix {
+export function scale(matrix: Matrix, vector: Vertex3): Matrix {
   const result = createMatrix();
 
   result[0] = matrix[0] * vector[0];
@@ -71,7 +72,7 @@ export function scale(matrix: Matrix, vector: number[]): Matrix {
   return result;
 }
 
-export function translate(matrix: Matrix, vector: number[]): Matrix {
+export function translate(matrix: Matrix, vector: Vertex3): Matrix {
   const result = createMatrix();
 
   result[0] = matrix[0];
@@ -94,10 +95,10 @@ export function translate(matrix: Matrix, vector: number[]): Matrix {
   return result;
 }
 
-export function rotate(matrix: Matrix, angle: number, axis: number[]): Matrix | null {
+export function rotate(matrix: Matrix, angle: number, axis: Vertex3): Matrix {
   let sq = Math.sqrt(axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2]);
   if (!sq) {
-    return null;
+    return matrix;
   }
 
   let [a, b, c] = axis;
@@ -146,7 +147,7 @@ export function rotate(matrix: Matrix, angle: number, axis: number[]): Matrix | 
   return result;
 }
 
-export function lookAt(eye: number[], center: number[], up: Matrix): Matrix {
+export function lookAt(eye: Vertex3, center: Vertex3, up: Vertex3): Matrix {
   const [eyeX, eyeY, eyeZ] = eye;
   const [centerX, centerY, centerZ] = center;
 
