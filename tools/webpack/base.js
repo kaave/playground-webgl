@@ -25,7 +25,7 @@ exports.resolve = {
 
 exports.rules = [
   {
-    test: /\.(txt|md|frag)$/,
+    test: /\.(txt|md|frag|vert|glsl)$/,
     use: 'raw-loader',
   },
 ];

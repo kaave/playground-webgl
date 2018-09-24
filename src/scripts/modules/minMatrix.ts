@@ -146,7 +146,7 @@ export function rotate(matrix: Matrix, angle: number, axis: number[]): Matrix | 
   return result;
 }
 
-export function lookAt(eye: Matrix, center: Matrix, up: Matrix): Matrix {
+export function lookAt(eye: number[], center: number[], up: Matrix): Matrix {
   const [eyeX, eyeY, eyeZ] = eye;
   const [centerX, centerY, centerZ] = center;
 
