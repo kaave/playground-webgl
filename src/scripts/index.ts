@@ -107,11 +107,9 @@ window.addEventListener('DOMContentLoaded', () => {
   gl.enableVertexAttribArray(attributeLocations.color);
   gl.vertexAttribPointer(attributeLocations.color, attributeStrides.color, gl.FLOAT, false, 0, 0);
 
-  // mMatrix はなんもしないのである
-  const mMatrix = matIV.identify();
   const vMatrix = matIV.lookAt(
     // 原点から上に1うしろに3
-    [0, 1, 3],
+    [0, 0, 3],
     [0, 0, 0],
     // カメラの上をY軸に固定、という意味らしい
     [0, 1, 0],
@@ -125,12 +123,18 @@ window.addEventListener('DOMContentLoaded', () => {
     100,
   );
   const vpMatrix = matIV.multiply(pMatrix, vMatrix);
-  const mvpMatrix = matIV.multiply(mMatrix, vpMatrix);
-  // mvpMatrixのインデックスを取得
-  const uniformLocation = gl.getUniformLocation(webglProgram, 'mvpMatrix');
-  // 頂点シェーダにデータを受け渡す
-  // mat4なので、uniformMatrix4 数字いろいろある
-  gl.uniformMatrix4fv(uniformLocation, false, mvpMatrix);
-  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  const uniformLocation = gl.getUniformLocation(webglProgram, 'mvpMatrix'); // mvpMatrixのインデックスを取得
+  // 複数表示してみる
+  // モデル変換の処理を追加するだけでいける そりゃそうだな
+  const count = 30;
+  [...Array(count).keys()].forEach(index => {
+    const mMatrix = matIV.translate(matIV.identify(), [index / count - 0.5, (index % 5) / 5 - 0.5, 0]);
+    const mvpMatrix = matIV.multiply(mMatrix, vpMatrix);
+    // 頂点シェーダにデータを受け渡す
+    // mat4なので、uniformMatrix4 数字いろいろある
+    gl.uniformMatrix4fv(uniformLocation, false, mvpMatrix);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  });
+
   gl.flush();
 });
