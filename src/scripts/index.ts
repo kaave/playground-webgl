@@ -10,15 +10,20 @@ type ShaderType = 'VERTEX' | 'FRAGMENT';
 function setShader(gl: WebGLRenderingContext, source: string, type: ShaderType): WebGLShader {
   const shaderTypeText = type === 'VERTEX' ? 'VertexShader' : 'FragmentShader';
   const shaderType = type === 'VERTEX' ? gl.VERTEX_SHADER : gl.FRAGMENT_SHADER;
+  // シェーダーを作成
   const shader = gl.createShader(shaderType);
   if (!shader) {
     throw new Error(`Can NOT create ${shaderTypeText}.`);
   }
 
+  // シェーダーとソースを紐づけ
   gl.shaderSource(shader, source);
+  // シェーダーをコンパイル
   gl.compileShader(shader);
 
+  // コンパイルにコケてたらエラー
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    console.error(gl.getShaderInfoLog(shader));
     throw new Error(`Can NOT compile ${shaderTypeText}.`);
   }
 
@@ -31,18 +36,24 @@ function createWebGLProgram(
   fragmentShader: WebGLShader,
 ): WebGLProgram {
   const program = gl.createProgram();
+
   if (!program) {
     throw new Error('Can NOT create WebGLProgram.');
   }
 
+  // プログラムオブジェクトにシェーダを割り当て
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
-  gl.linkProgram(program); // 2つのシェーダーをリンク
+
+  // 2つのシェーダーをリンク
+  gl.linkProgram(program);
 
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    console.error(gl.getProgramInfoLog(program));
     throw new Error('Can NOT link WebGLProgram with shaders.');
   }
 
+  // プログラムオブジェクト有効化
   gl.useProgram(program);
   return program;
 }
@@ -77,12 +88,12 @@ window.addEventListener('DOMContentLoaded', () => {
   const fragmentShader = setShader(gl, fragSource, 'FRAGMENT');
   const webglProgram = createWebGLProgram(gl, vertexShader, fragmentShader);
   const attributeLocations = {
-    position: gl.getAttribLocation(webglProgram, 'position'),
-    color: gl.getAttribLocation(webglProgram, 'color'),
+    position: gl.getAttribLocation(webglProgram, 'position'), // main.vertの`attribute position`のインデックスを取得
+    color: gl.getAttribLocation(webglProgram, 'color'), // main.vertの`attribute color`のインデックスを取得
   };
   const attributeStrides = {
-    position: 3,
-    color: 4,
+    position: 3, // vec3の3
+    color: 4, // vec4の4
   };
   const vertexPosition = [[0, 1, 0], [1, 0, 0], [-1, 0, 0]].reduce((tmp, ary) => [...tmp, ...ary], []);
   const positionVBO = createVBO(gl, vertexPosition);
@@ -96,10 +107,29 @@ window.addEventListener('DOMContentLoaded', () => {
   gl.enableVertexAttribArray(attributeLocations.color);
   gl.vertexAttribPointer(attributeLocations.color, attributeStrides.color, gl.FLOAT, false, 0, 0);
 
-  const vMatrix = matIV.lookAt([0, 0, 3], [0, 0, 0], [0, 1, 0]);
-  const pMatrix = matIV.perspective(90, canvas.width / canvas.height, 0.1, 100);
-  const mvpMatrix = matIV.multiply(matIV.multiply(pMatrix, vMatrix), vMatrix);
+  // mMatrix はなんもしないのである
+  const mMatrix = matIV.identify();
+  const vMatrix = matIV.lookAt(
+    // 原点から上に1うしろに3
+    [0, 1, 3],
+    [0, 0, 0],
+    // カメラの上をY軸に固定、という意味らしい
+    [0, 1, 0],
+  );
+  const pMatrix = matIV.perspective(
+    // 視野角
+    90,
+    // アス比 もとのまま
+    canvas.width / canvas.height,
+    0.1,
+    100,
+  );
+  const vpMatrix = matIV.multiply(pMatrix, vMatrix);
+  const mvpMatrix = matIV.multiply(mMatrix, vpMatrix);
+  // mvpMatrixのインデックスを取得
   const uniformLocation = gl.getUniformLocation(webglProgram, 'mvpMatrix');
+  // 頂点シェーダにデータを受け渡す
+  // mat4なので、uniformMatrix4 数字いろいろある
   gl.uniformMatrix4fv(uniformLocation, false, mvpMatrix);
   gl.drawArrays(gl.TRIANGLES, 0, 3);
   gl.flush();
