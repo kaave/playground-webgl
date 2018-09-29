@@ -10,7 +10,7 @@
 
 ### macOS
 
-- `brew install glslang clang-format`
+- `brew install glslang`
 
 ### VScode
 

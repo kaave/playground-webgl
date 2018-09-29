@@ -34,6 +34,11 @@
       ]
     }
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "run-s typecheck safe-guard"
+    }
+  },
   "scripts": {
     "start": "run-p start:*",
     "start:gulp": "cross-env NODE_ENV=development gulp",
@@ -59,14 +64,13 @@
     "fix:style": "prettier --write 'src/**/*.css'",
     "fix:script": "tslint -t stylish --fix 'src/**/*.{ts,tsx}'",
     "fix:json": "prettier --write 'src/**/*.json'",
-    "typecheck": "tsc --noEmit -p tsconfig.production.json",
-    "precommit": "run-s typecheck safe-guard"
+    "typecheck": "tsc --noEmit -p tsconfig.production.json"
   },
   "dependencies": {
     "date-fns": "^1.29.0",
     "libraries-frontend-framelunch": "framelunch/libraries-frontend-framelunch#0.4.0",
     "lodash-es": "^4.17.11",
-    "rxjs": "^6.3.2",
+    "rxjs": "^6.3.3",
     "tslib": "^1.9.3"
   },
   "devDependencies": {
@@ -76,9 +80,10 @@
     "browser-sync": "^2.24.7",
     "cache-loader": "^1.1.0",
     "child_process": "^1.0.2",
+    "clang-format": "^1.2.4",
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
-    "cssnano": "^4.1.0",
+    "cssnano": "^4.1.4",
     "dotenv": "^6.0.0",
     "fs-extra": "^7.0.0",
     "globby": "^8.0.1",
@@ -89,7 +94,7 @@
     "gulp-imagemin": "^4.0.0",
     "gulp-plumber": "^1.1.0",
     "http-server": "^0.11.1",
-    "husky": "^0.14.3",
+    "husky": "^1.0.1",
     "imagemin-mozjpeg": "^7.0.0",
     "imagemin-pngquant": "^6.0.0",
     "jest": "^23.6.0",
@@ -98,8 +103,8 @@
     "mini-css-extract-plugin": "^0.4.3",
     "npm-run-all": "^4.1.3",
     "postcss-color-hex-alpha": "^5.0.2",
-    "postcss-custom-media": "^7.0.3",
-    "postcss-custom-properties": "^8.0.5",
+    "postcss-custom-media": "^7.0.4",
+    "postcss-custom-properties": "^8.0.6",
     "postcss-fixes": "^2.0.1",
     "postcss-import": "^12.0.0",
     "postcss-loader": "^3.0.0",
@@ -107,24 +112,24 @@
     "postcss-url": "^8.0.0",
     "prettier": "^1.14.3",
     "raw-loader": "^0.5.1",
-    "require-dir": "^1.0.0",
+    "require-dir": "^1.1.0",
     "rimraf": "^2.6.2",
     "run-sequence": "^2.1.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "^0.23.0",
-    "stylelint": "^9.5.0",
+    "stylelint": "^9.6.0",
     "stylelint-config-standard": "^18.2.0",
     "svg-inline-loader": "^0.8.0",
-    "ts-jest": "^23.10.1",
+    "ts-jest": "^23.10.2",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
     "tslint-plugin-prettier": "^2.0.0",
-    "typescript": "^3.0.3",
+    "typescript": "^3.1.1",
     "uglifyjs-webpack-plugin": "^2.0.1",
     "url-loader": "^1.1.1",
-    "webpack": "^4.19.1",
+    "webpack": "^4.20.2",
     "webpack-bundle-analyzer": "^3.0.2",
     "webpack-cli": "^3.1.1",
-    "webpack-dev-server": "^3.1.8"
+    "webpack-dev-server": "^3.1.9"
   }
 }

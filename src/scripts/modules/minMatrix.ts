@@ -1,5 +1,7 @@
-type Matrix = Float32Array;
-type Vertex3 = [number, number, number];
+export type Matrix = Float32Array;
+export type Vertex2 = [number, number];
+export type Vertex3 = [number, number, number];
+export type Vertex4 = [number, number, number, number];
 
 export function createMatrix(): Matrix {
   return new Float32Array(16);
