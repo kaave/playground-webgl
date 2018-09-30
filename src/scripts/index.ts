@@ -128,7 +128,12 @@ window.addEventListener('DOMContentLoaded', () => {
   // モデル変換の処理を追加するだけでいける そりゃそうだな
   const count = 30;
   [...Array(count).keys()].forEach(index => {
-    const mMatrix = matIV.translate(matIV.identify(), [index / count - 0.5, (index % 5) / 5 - 0.5, 0]);
+    console.log((index % 5) / 5, Math.floor(index / 6) % 5);
+    const mMatrix = matIV.translate(matIV.identify(), [
+      (index % 5) / 5 - 0.5,
+      (Math.floor(index / 6) % 5) / 5 - 0.5,
+      0,
+    ]);
     const mvpMatrix = matIV.multiply(mMatrix, vpMatrix);
     // 頂点シェーダにデータを受け渡す
     // mat4なので、uniformMatrix4 数字いろいろある
