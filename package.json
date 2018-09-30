@@ -68,6 +68,7 @@
   },
   "dependencies": {
     "date-fns": "^1.29.0",
+    "deepcopy": "^1.0.0",
     "libraries-frontend-framelunch": "framelunch/libraries-frontend-framelunch#0.4.0",
     "lodash-es": "^4.17.11",
     "rxjs": "^6.3.3",

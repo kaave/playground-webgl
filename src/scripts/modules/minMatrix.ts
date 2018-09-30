@@ -1,3 +1,5 @@
+import deepcopy from 'deepcopy/cjs/index';
+
 export type Matrix = Float32Array;
 export type Vertex2 = [number, number];
 export type Vertex3 = [number, number, number];
@@ -124,8 +126,8 @@ export function rotate(matrix: Matrix, angle: number, axis: Vertex3): Matrix {
   const z = b * c * f - a * d;
   const A = c * c * f + e;
 
-  const result = !angle ? matrix : createMatrix();
-  if (!angle && matrix !== result) {
+  const result = !angle ? deepcopy(matrix) : createMatrix();
+  if (angle && matrix !== result) {
     result[12] = matrix[12];
     result[13] = matrix[13];
     result[14] = matrix[14];

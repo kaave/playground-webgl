@@ -1,0 +1,19 @@
+<%
+const config = {
+    title: 'top',
+    description: 'This is top page',
+    styles: ['/css/index.css'],
+    scripts: [
+        'https://cdn.polyfill.io/v2/polyfill.js?features=default-3.3,Promise',
+        '/js/vendor.bundle.js',
+        '/js/w017.js'
+    ],
+    metaImage: 'https://dummyimage.com/600x400/333/ddd.png&text=Dummy+image'
+};
+%>
+
+<%- include('./common/_head.ejs', { ...config }) %>
+
+<canvas id="canvas" class="Canvas"></canvas>
+
+<%- include('./common/_foot.ejs', { ...config }) %>
