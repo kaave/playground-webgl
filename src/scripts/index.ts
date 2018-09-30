@@ -1,71 +1,12 @@
 import './common/initializer';
 import '../styles/index.css';
 
+import createVBO from './modules/createVBO';
+import createWebGLProgram from './modules/createWebGLProgram';
 import * as matIV from './modules/minMatrix';
+import setShader from './modules/setShader';
 import fragSource from './shaders/main.frag';
 import vertSource from './shaders/main.vert';
-
-type ShaderType = 'VERTEX' | 'FRAGMENT';
-
-function setShader(gl: WebGLRenderingContext, source: string, type: ShaderType): WebGLShader {
-  const shaderTypeText = type === 'VERTEX' ? 'VertexShader' : 'FragmentShader';
-  const shaderType = type === 'VERTEX' ? gl.VERTEX_SHADER : gl.FRAGMENT_SHADER;
-  // シェーダーを作成
-  const shader = gl.createShader(shaderType);
-  if (!shader) {
-    throw new Error(`Can NOT create ${shaderTypeText}.`);
-  }
-
-  // シェーダーとソースを紐づけ
-  gl.shaderSource(shader, source);
-  // シェーダーをコンパイル
-  gl.compileShader(shader);
-
-  // コンパイルにコケてたらエラー
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    console.error(gl.getShaderInfoLog(shader));
-    throw new Error(`Can NOT compile ${shaderTypeText}.`);
-  }
-
-  return shader;
-}
-
-function createWebGLProgram(
-  gl: WebGLRenderingContext,
-  vertexShader: WebGLShader,
-  fragmentShader: WebGLShader,
-): WebGLProgram {
-  const program = gl.createProgram();
-
-  if (!program) {
-    throw new Error('Can NOT create WebGLProgram.');
-  }
-
-  // プログラムオブジェクトにシェーダを割り当て
-  gl.attachShader(program, vertexShader);
-  gl.attachShader(program, fragmentShader);
-
-  // 2つのシェーダーをリンク
-  gl.linkProgram(program);
-
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    console.error(gl.getProgramInfoLog(program));
-    throw new Error('Can NOT link WebGLProgram with shaders.');
-  }
-
-  // プログラムオブジェクト有効化
-  gl.useProgram(program);
-  return program;
-}
-
-function createVBO(gl: WebGLRenderingContext, data: number[]) {
-  const vbo = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
-  gl.bindBuffer(gl.ARRAY_BUFFER, null);
-
-  return vbo;
-}
 
 window.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById('canvas');
@@ -126,9 +67,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const uniformLocation = gl.getUniformLocation(webglProgram, 'mvpMatrix'); // mvpMatrixのインデックスを取得
   // 複数表示してみる
   // モデル変換の処理を追加するだけでいける そりゃそうだな
-  const count = 30;
-  [...Array(count).keys()].forEach(index => {
-    console.log((index % 5) / 5, Math.floor(index / 6) % 5);
+  [...Array(30).keys()].forEach(index => {
     const mMatrix = matIV.translate(matIV.identify(), [
       (index % 5) / 5 - 0.5,
       (Math.floor(index / 6) % 5) / 5 - 0.5,

@@ -92,7 +92,6 @@ export function translate(matrix: Matrix, vector: Vertex3): Matrix {
   result[13] = matrix[1] * vector[0] + matrix[5] * vector[1] + matrix[9] * vector[2] + matrix[13];
   result[14] = matrix[2] * vector[0] + matrix[6] * vector[1] + matrix[10] * vector[2] + matrix[14];
   result[15] = matrix[3] * vector[0] + matrix[7] * vector[1] + matrix[11] * vector[2] + matrix[15];
-  console.log(matrix, result);
 
   return result;
 }
