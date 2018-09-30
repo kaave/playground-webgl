@@ -1,6 +1,7 @@
 import './common/initializer';
 import '../styles/index.css';
 
+import createIBO from './modules/createIBO';
 import createVBO from './modules/createVBO';
 import createWebGLProgram from './modules/createWebGLProgram';
 import * as matIV from './modules/minMatrix';
@@ -33,17 +34,25 @@ window.addEventListener('DOMContentLoaded', () => {
     position: 3, // vec3の3
     color: 4, // vec4の4
   };
-  const vertexPosition = [[0, 1, 0], [1, 0, 0], [-1, 0, 0]].reduce((tmp, ary) => [...tmp, ...ary], []);
+  const vertexPosition = [[0, 1, 0], [1, 0, 0], [-1, 0, 0], [0, -1, 0]].reduce((tmp, ary) => [...tmp, ...ary], []);
   const positionVBO = createVBO(gl, vertexPosition);
   gl.bindBuffer(gl.ARRAY_BUFFER, positionVBO);
   gl.enableVertexAttribArray(attributeLocations.position);
   gl.vertexAttribPointer(attributeLocations.position, attributeStrides.position, gl.FLOAT, false, 0, 0);
 
-  const vertexColor = [[1, 1, 0, 1], [0, 1, 1, 1], [1, 0, 1, 1]].reduce((tmp, ary) => [...tmp, ...ary], []);
+  const vertexColor = [[1, 1, 0, 1], [0, 1, 1, 1], [1, 0, 1, 1], [1, 1, 1, 1]].reduce(
+    (tmp, ary) => [...tmp, ...ary],
+    [],
+  );
   const colorVBO = createVBO(gl, vertexColor);
   gl.bindBuffer(gl.ARRAY_BUFFER, colorVBO);
   gl.enableVertexAttribArray(attributeLocations.color);
   gl.vertexAttribPointer(attributeLocations.color, attributeStrides.color, gl.FLOAT, false, 0, 0);
+
+  // IBOの生成
+  const vertexIndex = [[0, 1, 2], [1, 2, 3]].reduce((tmp, ary) => [...tmp, ...ary], []);
+  const ibo = createIBO(gl, vertexIndex);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
 
   const vMatrix = matIV.lookAt(
     // 原点から上に1うしろに3
@@ -62,11 +71,6 @@ window.addEventListener('DOMContentLoaded', () => {
   );
   const vpMatrix = matIV.multiply(pMatrix, vMatrix);
   const uniformLocation = gl.getUniformLocation(webglProgram, 'mvpMatrix'); // mvpMatrixのインデックスを取得
-  const renderer = (mMatrix: matIV.Matrix) => {
-    const mvpMatrix = matIV.multiply(vpMatrix, mMatrix);
-    gl.uniformMatrix4fv(uniformLocation, false, mvpMatrix);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-  };
 
   let count = 0;
   const animation = () => {
@@ -79,24 +83,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const radian = toRadian(count % 360);
 
-    // モデル1は円の軌道を描き移動する
-    const positionA = {
-      x: Math.cos(radian),
-      y: Math.sin(radian),
-    };
-    const mMatrixA = matIV.translate(matIV.identify(), [positionA.x, positionA.y, 0.0]);
-    renderer(mMatrixA);
-
-    // モデル2はY軸を中心に回転する
-    let mMatrixB = matIV.translate(matIV.identify(), [0.5, -0.5, 0.0]);
-    mMatrixB = matIV.rotate(mMatrixB, radian, [0, 1, 0]);
-    renderer(mMatrixB);
-
-    // モデル3は拡大縮小する
-    const scale = Math.abs(Math.sin(radian));
-    let mMatrixC = matIV.translate(matIV.identify(), [-1.0, -1.2, 0.0]);
-    mMatrixC = matIV.scale(mMatrixC, [scale, scale, 0.0]);
-    renderer(mMatrixC);
+    const mMatrix = matIV.rotate(matIV.identify(), radian, [0, 1, 0]);
+    const mvpMatrix = matIV.multiply(vpMatrix, mMatrix);
+    gl.uniformMatrix4fv(uniformLocation, false, mvpMatrix);
+    gl.drawElements(gl.TRIANGLES, vertexIndex.length, gl.UNSIGNED_SHORT, 0);
 
     gl.flush();
     requestAnimationFrame(animation);
